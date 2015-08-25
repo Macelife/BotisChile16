@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -14,33 +14,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapFragment
-        extends Fragment
+public class MapFragment extends Fragment
 {
 
     MapView mapView;
     GoogleMap map;
-    //GoogleAPI mGoogleApiClient;
-//    LatLng newLatLng;
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        super.onCreate(savedInstanceState);
-//        mGoogleApiClient = new GoogleAPI(getActivity());
-//        mGoogleApiClient.buildGoogleApiClient();
-    }
-
-//    @Override
-//    public void onStart(){
-//        super.onStart();
-//        mGoogleApiClient.Connect();
-//    }
+    public LatLng LatLngLocation=null;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.map_layout, container, false);
+
+        super.onActivityCreated(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         // Gets the MapView from the XML layout and creates it
         mapView = (MapView) v.findViewById(R.id.mapview);
@@ -90,40 +77,71 @@ public class MapFragment
 //                    .newCameraPosition(cameraPosition));
 //
 //        }
+        // Gets the Last location from the activity
+
+//        MainActivity activity = (MainActivity) getActivity();
+//        newLocation = activity.getLatLng();
 
 
-        //Starting position
-        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(-36.4370562,-71.9207452) , 12) );
-
+//        //Starting position
+//        map.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(-33.4556327, -70.655571), 12) );
+       map.moveCamera( CameraUpdateFactory.newLatLngZoom( new LatLng(-33.4556327, -70.655571), 12) );
 //
-
         //Move the camera to a determinate position
         // Updates the location and zoom of the MapView
-        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(-33.4556327, -70.655571), 12);
-       // map.animateCamera(cameraUpdate);
 
-
-//        newLatLng = new LatLng(mGoogleApiClient.getLat(), mGoogleApiClient.getLon());
-
-//        map.moveCamera( CameraUpdateFactory.newLatLngZoom(newLatLng, 12));
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
+//        map.animateCamera(cameraUpdate);
 
         return v;
     }
 
-//    protected synchronized void buildGoogleApiClient() {
+//    public void checkLatLng(){
 //
-//        mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API)
-//                .build();
+//        MainActivity activity = (MainActivity) getActivity();
+//        LatLngLocation = activity.getNewLatLng();
+//        if(LatLngLocation!=null){
+//            updateView();
+//        }
+//    }
+
+//    public void updateView(){
+//
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
+//         map.animateCamera(cameraUpdate);
 //    }
 
     @Override
     public void onResume() {
 
+
+        MainActivity activity = (MainActivity) getActivity();
+        LatLngLocation = activity.getNewLatLng();
+
+        if(LatLngLocation!=null){
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
+            map.animateCamera(cameraUpdate);
+        }
+
         mapView.onResume();
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+
+        MainActivity activity = (MainActivity) getActivity();
+        LatLngLocation = activity.getNewLatLng();
+
+        if(LatLngLocation!=null){
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
+            map.animateCamera(cameraUpdate);
+        }
+
+        mapView.onPause();
+        super.onPause();
     }
 
     @Override

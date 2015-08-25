@@ -1,25 +1,34 @@
 package com.justanotherproject.botischileapi16;
 
 import android.app.Activity;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+
+
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements
+        NavigationDrawerFragment.NavigationDrawerCallbacks,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener  {
+
+    public GoogleApiClient mGoogleApiClient;
+    public LatLng newLatLng;
+    public Location mLastLocation=null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,6 +45,17 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+
+        mGoogleApiClient.connect();
+
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -46,9 +66,36 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+
+    public void onConnected(Bundle connectionHint) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            newLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+//          MapFragment mapfragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+//          mapfragment.checkLatLng();
+        }
+    }
+
+
+    public LatLng getNewLatLng (){
+
+            return newLatLng;
+    }
+
+
+
+//    public void updateLocation(){
+//
+//        MapFragment mapfragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
+//
+//        mapfragment.updateView(newLatLng);
+//
+//    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager(); // For AppCompat use getSupportFragmentManager
         switch(position) {
@@ -57,7 +104,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new MapFragment();
                 break;
             case 1:
-                fragment = new Fragment2();
+                fragment = new Promo();
                 break;
             case 2:
                 fragment = new Fragment3();
@@ -74,6 +121,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onSectionAttached(int number) {
+
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
@@ -100,6 +148,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -165,5 +214,26 @@ public class MainActivity extends AppCompatActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }

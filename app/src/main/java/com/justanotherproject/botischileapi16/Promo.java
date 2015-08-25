@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class Fragment2 extends Fragment {
+public class Promo extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment2_layout,
+        View view = inflater.inflate(R.layout.promo_layout,
                 container, false);
         return view;
     }

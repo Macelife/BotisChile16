@@ -1,18 +1,18 @@
 <resources>
-    <string name="app_name">BotisChileapi16</string>
+    <string name="app_name">Botis Chile</string>
 
     <string name="title_section1">Botis en el Mapa</string>
-    <string name="title_section2">Section 2</string>
+    <string name="title_section2">Promos</string>
     <string name="title_section3">Section 3</string>
     <string name="title_section4">Section 4</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Ejemplo</string>
+    <string name="action_example">New Activity</string>
 
     <string name="action_settings">Configuración</string>
        <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-           AIzaSyACTzYv2_Gm13wsY6zeJFmYhevg_EPWF8s
+           AIzaSyAlMux_QKb1mTT3VNw3fUxUKobJvJEjwmU
     </string>
 </resources>
