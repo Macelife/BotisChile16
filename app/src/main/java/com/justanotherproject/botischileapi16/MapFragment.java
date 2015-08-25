@@ -1,10 +1,15 @@
 package com.justanotherproject.botischileapi16;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,15 +20,30 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment
+    implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener
 {
 
     MapView mapView;
     GoogleMap map;
-    public LatLng LatLngLocation=null;
+    public GoogleApiClient mGoogleApiClient;
+    public LatLng newLatLng;
+    public Location mLastLocation=null;
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mGoogleApiClient.connect();
+
         View v = inflater.inflate(R.layout.map_layout, container, false);
 
         super.onActivityCreated(savedInstanceState);
@@ -96,33 +116,26 @@ public class MapFragment extends Fragment
         return v;
     }
 
-//    public void checkLatLng(){
-//
-//        MainActivity activity = (MainActivity) getActivity();
-//        LatLngLocation = activity.getNewLatLng();
-//        if(LatLngLocation!=null){
-//            updateView();
-//        }
-//    }
+    public void onConnected(Bundle connectionHint) {
 
-//    public void updateView(){
-//
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
-//         map.animateCamera(cameraUpdate);
-//    }
+//        GET LAST LOCATION
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            newLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            updateView();
+        }
+
+    }
+
+    public void updateView(){
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng, 12);
+         map.animateCamera(cameraUpdate);
+    }
 
     @Override
     public void onResume() {
-
-
-        MainActivity activity = (MainActivity) getActivity();
-        LatLngLocation = activity.getNewLatLng();
-
-        if(LatLngLocation!=null){
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
-            map.animateCamera(cameraUpdate);
-        }
 
         mapView.onResume();
         super.onResume();
@@ -130,15 +143,6 @@ public class MapFragment extends Fragment
 
     @Override
     public void onPause() {
-
-        MainActivity activity = (MainActivity) getActivity();
-        LatLngLocation = activity.getNewLatLng();
-
-        if(LatLngLocation!=null){
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLngLocation, 12);
-            map.animateCamera(cameraUpdate);
-        }
 
         mapView.onPause();
         super.onPause();
@@ -154,5 +158,14 @@ public class MapFragment extends Fragment
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

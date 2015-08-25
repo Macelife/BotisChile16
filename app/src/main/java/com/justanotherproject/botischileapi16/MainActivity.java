@@ -13,22 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-
 
 
 public class MainActivity extends AppCompatActivity
         implements
-        NavigationDrawerFragment.NavigationDrawerCallbacks,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener  {
-
-    public GoogleApiClient mGoogleApiClient;
-    public LatLng newLatLng;
-    public Location mLastLocation=null;
+        NavigationDrawerFragment.NavigationDrawerCallbacks
+{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -46,15 +36,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-
-        mGoogleApiClient.connect();
-
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -66,33 +47,6 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-
-    public void onConnected(Bundle connectionHint) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            newLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-//          MapFragment mapfragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-//          mapfragment.checkLatLng();
-        }
-    }
-
-
-    public LatLng getNewLatLng (){
-
-            return newLatLng;
-    }
-
-
-
-//    public void updateLocation(){
-//
-//        MapFragment mapfragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapview);
-//
-//        mapfragment.updateView(newLatLng);
-//
-//    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -214,26 +168,5 @@ public class MainActivity extends AppCompatActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 }
